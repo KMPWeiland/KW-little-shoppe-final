@@ -4,15 +4,22 @@ RSpec.describe "Merchant invoices endpoints" do
   before :each do
     @merchant2 = Merchant.create!(name: "Merchant")
     @merchant1 = Merchant.create!(name: "Merchant Again")
+    @merchant3 = Merchant.create!(name: "Another Merchant")
 
     @customer1 = Customer.create!(first_name: "Papa", last_name: "Gino")
     @customer2 = Customer.create!(first_name: "Jimmy", last_name: "John")
+    @customer3 = Customer.create!(first_name: "Jack", last_name: "Fey")
+
+    @coupon1 = Coupon.create(merchant: @merchant1, code: "UNIQUECODE")
 
     @invoice1 = Invoice.create!(customer: @customer1, merchant: @merchant1, status: "packaged")
     Invoice.create!(customer: @customer1, merchant: @merchant1, status: "shipped")
     Invoice.create!(customer: @customer1, merchant: @merchant1, status: "shipped")
     Invoice.create!(customer: @customer1, merchant: @merchant1, status: "shipped")
     @invoice2 = Invoice.create!(customer: @customer1, merchant: @merchant2, status: "shipped")
+
+    @invoice3 = Invoice.create!(customer: @customer3, merchant: @merchant3, status: "shipped", coupon_id: @coupon1.id)
+    @invoice4 = Invoice.create!(customer: @customer3, merchant: @merchant3, status: "shipped", coupon_id: nil)
   end
 
   it "should return all invoices for a given merchant based on status param" do
@@ -46,6 +53,17 @@ RSpec.describe "Merchant invoices endpoints" do
     expect(response).to be_successful
     expect(json[:data].count).to eq(1)
     expect(json[:data][0][:id]).to eq(@invoice2.id.to_s)
+  end
+
+  it "should only get invoices for merchant given and include coupon_id if used" do
+    get "/api/v1/merchants/#{@merchant3.id}/invoices?status=shipped"
+
+    json = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to be_successful
+    expect(json[:data].count).to eq(2)
+    expect(json[:data][0][:coupon_id]).to eq(@coupon1.id)
+    expect(json[:data][1][:coupon_id]).to eq(nil)
   end
 
   it "should return 404 and error message when merchant is not found" do
