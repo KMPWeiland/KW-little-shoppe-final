@@ -4,21 +4,20 @@ class Api::V1::Merchants::CouponsController < ApplicationController
     merchant = Merchant.find(params[:merchant_id])
     coupons = merchant.coupons
 
-    #  render json: coupons.map { |coupon| 
-    #   {
-    #   id: coupon.id,
-    #   type: "coupon",
-    #   attributes: {
-    #     name: coupon.full_name,
-    #     code: coupon.code,
-    #     percent_off: coupon.percent_off,
-    #     dollar_off: coupon.dollar_off,
-    #     active: coupon.active,
-    #     merchant_id: coupon.merchant_id,
-    #     usage_count: coupon.usage_count
-    #     }
-    #   }
-    # }, status: :ok
+    # binding.pry
+
+    # if params[:active].present? && params[:active] == "true"
+    #   # coupons = Coupon.filter_by_active(params[:active])  
+    #   coupons.filter_by_active(true)
+      
+    # elsif params[:active].present? && params[:active] == "false"
+    #   coupons.filter_by_active(false)
+    # end
+
+    if params[:active].present?
+      coupons = Coupon.filter_by_active(params[:active])
+    end
+
     render json: CouponSerializer.new(coupons)
     rescue ActiveRecord::RecordNotFound
       render json: { error: 'Coupon not found' }, status: :not_found

@@ -22,6 +22,39 @@ RSpec.describe "Merchant Coupons API", type: :request do
       expect(json[:data][1][:id]).to eq(coupon2.id.to_s)
       expect(json[:data][2][:id]).to eq(coupon3.id.to_s)
     end
+
+    it "should filter all of a merchants coupons for active coupons" do
+      merchant = create(:merchant)
+      4.times { create(:coupon, merchant: merchant, active: true) }
+      9.times { create(:coupon, merchant: merchant, active: false) }
+      
+      get "/api/v1/merchants/#{merchant.id}/coupons?active=true"      
+
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(json[:data].count).to eq(4)
+      expect(json[:data][0][:attributes][:active]).to eq(true)
+      expect(json[:data][1][:attributes][:active]).to eq(true)
+      expect(json[:data][2][:attributes][:active]).to eq(true)
+      expect(json[:data][3][:attributes][:active]).to eq(true)
+    end
+
+    it "should filter all of a merchants coupons for inactive coupons" do
+      merchant = create(:merchant)
+      4.times { create(:coupon, merchant: merchant, active: true) }
+      9.times { create(:coupon, merchant: merchant, active: false) }
+      
+      get "/api/v1/merchants/#{merchant.id}/coupons?active=false"      
+
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(json[:data].count).to eq(9)
+      expect(json[:data][4][:attributes][:active]).to eq(false)
+      expect(json[:data][5][:attributes][:active]).to eq(false)
+      expect(json[:data][6][:attributes][:active]).to eq(false)
+    end
   end
 
   describe "Create a Coupon -- POST /api/v1/merchants/:merchant_id/coupons" do
