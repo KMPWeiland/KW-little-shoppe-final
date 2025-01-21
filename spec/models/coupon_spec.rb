@@ -82,11 +82,29 @@ RSpec.describe Coupon do
     describe "#merchant_coupon_limit_to_five" do
       let(:merchant) { create(:merchant) }
       it "does NOT allow more than 5 active coupons for a merchant" do
-        create_list(:coupon, 5, merchant: merchant, active: true)
+        5.times { create(:coupon, merchant: merchant, active: true) }
+        # create_list(:coupon, 5, merchant: merchant, active: true)
         new_coupon = build(:coupon, merchant: merchant, active: true)
      
         expect(new_coupon).to_not be_valid
         expect(new_coupon.errors[:base]).to include("This merchant already has 5 active coupons.")
+      end
+    end
+
+    describe "#more_than_five_active_coupons?" do
+      let(:merchant) { create(:merchant) }
+      it "returns true if a merchant has 5 or more active coupons" do
+        5.times { create(:coupon, merchant: merchant, active: true) }
+        new_coupon = build(:coupon, merchant: merchant, active: true)
+     
+        expect(new_coupon.more_than_five_active_coupons?(merchant)).to eq(true)
+      end
+
+      it "returns false if a merchant has less than 5 active coupons" do
+        4.times { create(:coupon, merchant: merchant, active: true) }
+        new_coupon = build(:coupon, merchant: merchant, active: true)
+     
+        expect(new_coupon.more_than_five_active_coupons?(merchant)).to eq(false)
       end
     end
   end

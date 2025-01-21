@@ -14,6 +14,11 @@ class Coupon < ApplicationRecord
     merchant.coupons.where(active: true).count >= 5
   end
 
+  def self.filter_by_active(active)
+    self.where(active: active)
+  end
+
+
   private
 
   def discount_type_constraints
@@ -23,7 +28,6 @@ class Coupon < ApplicationRecord
       errors.add(:base, "only one discount type (percent or dollar off) can be specified at a time.")
     end
   end 
-
 
   def merchant_coupon_limit_to_five 
     if active? && merchant && merchant.coupons.where(active: true).count >= 5
