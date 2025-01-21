@@ -12,7 +12,6 @@ describe "Merchant endpoints", :type => :request do
       expect(json[:data].count).to eq(5)
       expect(json[:data].first).to include(:id, :type, :attributes)
       expect(json[:data].first[:attributes]).to include(:name)
-      binding.pry 
       expect(json[:data].first[:attributes]).to include(:coupons_count)
     end
 
