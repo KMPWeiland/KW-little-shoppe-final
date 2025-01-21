@@ -15,7 +15,7 @@ class Api::V1::Merchants::CouponsController < ApplicationController
     # end
 
     if params[:active].present?
-      coupons = Coupon.filter_by_active(params[:active])
+      coupons = coupons.filter_by_active(params[:active])
     end
 
     render json: CouponSerializer.new(coupons)
