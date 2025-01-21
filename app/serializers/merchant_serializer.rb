@@ -7,4 +7,12 @@ class MerchantSerializer
   } do |merchant|
     merchant.item_count
   end
+
+  attribute :coupons_count do |merchant|
+    merchant.coupons.count
+  end
+
+  attribute :invoice_coupon_count do |merchant|
+    merchant.invoices.joins(:coupon).where(coupons: {active: true}).count    
+  end
 end

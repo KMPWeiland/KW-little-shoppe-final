@@ -12,6 +12,7 @@ describe "Merchant endpoints", :type => :request do
       expect(json[:data].count).to eq(5)
       expect(json[:data].first).to include(:id, :type, :attributes)
       expect(json[:data].first[:attributes]).to include(:name)
+      expect(json[:data].first[:attributes]).to include(:coupons_count)
     end
 
     it "should return a data key even when there are no merchants to return" do

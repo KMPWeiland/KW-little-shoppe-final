@@ -38,6 +38,7 @@ RSpec.describe "Merchant Coupons API", type: :request do
       expect(json[:data][1][:attributes][:active]).to eq(true)
       expect(json[:data][2][:attributes][:active]).to eq(true)
       expect(json[:data][3][:attributes][:active]).to eq(true)
+      expect(json[:data][4]).to eq(nil)
     end
 
     it "should filter all of a merchants coupons for inactive coupons" do
