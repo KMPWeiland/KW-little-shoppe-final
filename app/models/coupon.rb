@@ -18,6 +18,17 @@ class Coupon < ApplicationRecord
     self.where(active: active)
   end
 
+  def toggle_active_status(merchant)
+    new_active_status = !active
+
+    if new_active_status && more_than_five_active_coupons?(merchant)
+      errors.add(:base, "This merchant already has 5 active coupons.")
+      return false
+    end
+
+    update!(active: new_active_status)
+  end
+
 
   private
 

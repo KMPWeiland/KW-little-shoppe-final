@@ -49,8 +49,8 @@ RSpec.describe Coupon do
     end
   end
 
-  describe "Instance variables" do
-    describe "#discount_type_constraints determines a coupon" do
+  describe "Instance methods" do
+    describe "#discount_type_constraints" do
       let(:merchant) { create(:merchant) }
       it "a coupon is valid when percent_off is not nill and dollar_off is nil" do
         coupon = build(:coupon, merchant: merchant, active: true, percent_off: 10, dollar_off: nil)
@@ -106,6 +106,31 @@ RSpec.describe Coupon do
      
         expect(new_coupon.more_than_five_active_coupons?(merchant)).to eq(false)
       end
+    end
+
+    describe "#toggle_active_status" do
+    let(:merchant) { create(:merchant) }
+      it 'activates the coupon if merchant has less than 5 active coupons' do
+        # Create an inactive coupon
+        coupon = create(:coupon, merchant: merchant, active: false)
+        # Create 4 active coupons (still under the limit)
+        create_list(:coupon, 4, merchant: merchant, active: true)
+
+        expect(coupon.toggle_active_status(merchant)).to be true
+        expect(coupon.reload.active).to be true
+      end
+
+      it 'fails to activate if merchant already has 5 active coupons' do
+        # Create an inactive coupon
+        coupon = create(:coupon, merchant: merchant, active: false)
+        # Create 5 active coupons (at the limit)
+        create_list(:coupon, 5, merchant: merchant, active: true)
+
+        expect(coupon.toggle_active_status(merchant)).to be false
+        expect(coupon.reload.active).to be false
+        expect(coupon.errors.full_messages).to include("This merchant already has 5 active coupons.")
+      end
+
     end
   end
 end
