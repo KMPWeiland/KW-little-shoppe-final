@@ -12,4 +12,22 @@ class ErrorSerializer
       errors: ["invalid search params"] 
     }
   end
+
+  def self.format_not_found(error)
+    {
+      message: "Record not found",
+      errors: [error.message]
+    }
+  end
+
+  # def self.format(error)
+  #   {
+  #     message: "Error processing your request",
+  #     errors: [error.message]
+  #   }
+  # end
+
+
+
+
 end

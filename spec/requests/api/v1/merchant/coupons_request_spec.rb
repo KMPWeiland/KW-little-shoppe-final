@@ -122,7 +122,7 @@ RSpec.describe "Merchant Coupons API", type: :request do
       json = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to be_successful
-      expect(json[:active]).to eq(true)
+      expect(json[:data][:attributes][:active]).to eq(true)
     end
 
     it "inactivates an active coupon" do
@@ -133,7 +133,7 @@ RSpec.describe "Merchant Coupons API", type: :request do
       json = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to be_successful
-      expect(json[:active]).to eq(false)
+      expect(json[:data][:attributes][:active]).to eq(false)
     end
 
     it "returns an error when the merchant already has 5 active coupons" do
@@ -158,7 +158,9 @@ RSpec.describe "Merchant Coupons API", type: :request do
 
       expect(response).to_not be_successful
       expect(response).to have_http_status(:not_found)
-      expect(json[:error]).to eq("Coupon not found")
+      expect(json).to have_key(:message)
+      expect(json[:message]).to eq("Record not found")
+      expect(json[:errors]).to be_an(Array)
     end
   end
 
@@ -188,7 +190,9 @@ RSpec.describe "Merchant Coupons API", type: :request do
       json = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to have_http_status(:not_found)
-      expect(json[:error]).to eq("Coupon not found")
+      expect(json).to have_key(:message)
+      expect(json[:message]).to eq("Record not found")
+      expect(json[:errors]).to be_an(Array)
     end
 
     it "returns a 404 error if the merchant does not exist" do
@@ -196,7 +200,7 @@ RSpec.describe "Merchant Coupons API", type: :request do
       json = JSON.parse(response.body, symbolize_names: true) 
       
       expect(response).to have_http_status(:not_found) 
-      expect(json[:error]).to eq("Coupon not found")
+      expect(json[:errors]).to eq(["Couldn't find Merchant with 'id'=99999"])
     end
 
     # it 'includes the correct usage_count' do
