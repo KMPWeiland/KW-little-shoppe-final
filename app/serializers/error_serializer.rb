@@ -20,14 +20,4 @@ class ErrorSerializer
     }
   end
 
-  # def self.format(error)
-  #   {
-  #     message: "Error processing your request",
-  #     errors: [error.message]
-  #   }
-  # end
-
-
-
-
 end
