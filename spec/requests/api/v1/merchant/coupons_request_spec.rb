@@ -202,21 +202,6 @@ RSpec.describe "Merchant Coupons API", type: :request do
       expect(response).to have_http_status(:not_found) 
       expect(json[:errors]).to eq(["Couldn't find Merchant with 'id'=99999"])
     end
-
-    # it 'includes the correct usage_count' do
-    #   merchant = create(:merchant)
-    #   coupon = create(:coupon)
-    #   customer = create(:customer)
-  
-    #   invoice1 = create(:invoice, customer_id: customer.id, merchant_id: merchant.id, coupon_id: coupon.id, status: "packaged")
-    #   invoice2 = create(:invoice, customer_id: customer.id, merchant_id: merchant.id, coupon_id: coupon.id, status: "packaged")
-  
-    #   serialized = CouponSerializer.new(coupon).serializable_hash
-  
-    #   attributes = serialized[:data][:attributes]
-  
-    #   expect(attributes[:usage_count]).to eq(2)
-    # end 
   end
   
 end
